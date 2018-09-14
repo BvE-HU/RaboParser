@@ -31,7 +31,7 @@ final public class RaboCSVParser {
 		
 		Map<String, String> allReferences = new HashMap<String, String>();
 		Set<String> knownDuplicates = new HashSet<String>();
-		List<FailedTransaction> failed = new ArrayList<FailedTransaction>();
+		List<FailedTransaction> failedTransactions = new ArrayList<FailedTransaction>();
 
 		Record transaction;
 		while ((transaction = parser.parseNextRecord()) != null) {
@@ -43,28 +43,28 @@ final public class RaboCSVParser {
 			    BigDecimal endBalance = new BigDecimal(transaction.getString("End Balance"));
 			    
 			    String replacedDescription = allReferences.put(reference, description);
-			    boolean duplicateReference = replacedDescription != null; 
+			    boolean referenceIsDuplicate = replacedDescription != null; 
 			    
-			    if (duplicateReference) {
+			    if (referenceIsDuplicate) {
 			    	// knownDuplicates.add returns true if the reference is not yet in the set
 			    	boolean firstDuplicate = knownDuplicates.add(reference); 
 			    	if (firstDuplicate) {
-			    		failed.add(new FailedTransaction(reference, replacedDescription, INVALID.DUPLICATE));
+			    		failedTransactions.add(new FailedTransaction(reference, replacedDescription, INVALID.DUPLICATE));
 			    	}
 			    	
-			    	failed.add(new FailedTransaction(reference, description, INVALID.DUPLICATE));
+			    	failedTransactions.add(new FailedTransaction(reference, description, INVALID.DUPLICATE));
 			    	continue;
 			    }
 
 			    if (startBalance.add(mutation).compareTo(endBalance) != 0) {
-			    	failed.add(new FailedTransaction(reference, description, INVALID.WRONG_BALANCE));
+			    	failedTransactions.add(new FailedTransaction(reference, description, INVALID.WRONG_BALANCE));
 			    }
 			} catch (Exception e) {
 			    log.append("Failed to parse row with reference: " +transaction.getString("Reference")+"\n");
 			}
 		}
 		
-		return failed;
+		return failedTransactions;
 	}
 	
 	public void printLog() {
