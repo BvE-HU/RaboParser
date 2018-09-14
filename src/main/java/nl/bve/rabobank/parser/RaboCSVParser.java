@@ -54,11 +54,11 @@ final public class RaboCSVParser {
 			    	continue;
 			    }
 			    
-			    BigDecimal transactionStartBalance = new BigDecimal(transaction.getString("Start Balance"));
-			    BigDecimal transactionMutation = new BigDecimal(transaction.getString("Mutation"));
-			    BigDecimal transactionEndBalance = new BigDecimal(transaction.getString("End Balance"));
+			    BigDecimal startBalance = new BigDecimal(transaction.getString("Start Balance"));
+			    BigDecimal mutation = new BigDecimal(transaction.getString("Mutation"));
+			    BigDecimal endBalance = new BigDecimal(transaction.getString("End Balance"));
 
-			    if (transactionStartBalance.add(transactionMutation).compareTo(transactionEndBalance) != 0) {
+			    if (startBalance.add(mutation).compareTo(endBalance) != 0) {
 			    	failed.add(new FailedTransaction(reference, description, INVALID.WRONG_BALANCE));
 			    }
 			} catch (Exception e) {
