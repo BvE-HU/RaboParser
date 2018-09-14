@@ -38,14 +38,16 @@ final public class RaboCSVParser {
 			try {
 			    String reference = transaction.getString("Reference");
 			    String description = transaction.getString("Description");
-	
+			    BigDecimal startBalance = new BigDecimal(transaction.getString("Start Balance"));
+			    BigDecimal mutation = new BigDecimal(transaction.getString("Mutation"));
+			    BigDecimal endBalance = new BigDecimal(transaction.getString("End Balance"));
+			    
 			    String replacedDescription = allReferences.put(reference, description);
 			    boolean duplicateReference = replacedDescription != null; 
 			    
 			    if (duplicateReference) {
 			    	// knownDuplicates.add returns true if the reference is not yet in the set
 			    	boolean firstDuplicate = knownDuplicates.add(reference); 
-			    	
 			    	if (firstDuplicate) {
 			    		failed.add(new FailedTransaction(reference, replacedDescription, INVALID.DUPLICATE));
 			    	}
@@ -53,10 +55,6 @@ final public class RaboCSVParser {
 			    	failed.add(new FailedTransaction(reference, description, INVALID.DUPLICATE));
 			    	continue;
 			    }
-			    
-			    BigDecimal startBalance = new BigDecimal(transaction.getString("Start Balance"));
-			    BigDecimal mutation = new BigDecimal(transaction.getString("Mutation"));
-			    BigDecimal endBalance = new BigDecimal(transaction.getString("End Balance"));
 
 			    if (startBalance.add(mutation).compareTo(endBalance) != 0) {
 			    	failed.add(new FailedTransaction(reference, description, INVALID.WRONG_BALANCE));
