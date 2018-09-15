@@ -1,13 +1,13 @@
 package nl.bve.rabobank.parser;
 
-enum INVALID { DUPLICATE, WRONG_BALANCE }
+enum INVALID { DUPLICATE, WRONG_BALANCE, UNPARSEABLE }
 
 final class FailedTransaction implements Comparable<FailedTransaction> {
 	private String reference;
 	private String description;
 	private INVALID cause;
 	
-	public FailedTransaction(String reference, String description, INVALID cause) {
+	FailedTransaction(String reference, String description, INVALID cause) {
 		this.reference = reference;
 		this.description = description;
 		this.cause = cause;

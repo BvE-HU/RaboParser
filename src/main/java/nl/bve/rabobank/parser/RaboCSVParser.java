@@ -3,73 +3,34 @@ package nl.bve.rabobank.parser;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 import com.univocity.parsers.common.record.Record;
 import com.univocity.parsers.csv.CsvParser;
 import com.univocity.parsers.csv.CsvParserSettings;
 
-final public class RaboCSVParser {
-	private File transactionsFile = null;
-	private StringBuilder log = new StringBuilder();
+final class RaboCSVParser extends RaboParser {
 	private CsvParserSettings settings = new CsvParserSettings();
 	private CsvParser parser = new CsvParser(settings);
 	
-	protected RaboCSVParser(File transactionsFile) {
-		this.transactionsFile = transactionsFile;
+	RaboCSVParser(File transactionsFile) throws FileNotFoundException {
 		settings.setHeaderExtractionEnabled(true);
-	}
-	
-	protected List<FailedTransaction> parse() throws FileNotFoundException {
 		parser.beginParsing(new FileReader(transactionsFile));
-		
-		Map<String, String> allReferences = new HashMap<String, String>();
-		Set<String> knownDuplicates = new HashSet<String>();
-		List<FailedTransaction> failedTransactions = new ArrayList<FailedTransaction>();
-
-		Record transaction;
-		while ((transaction = parser.parseNextRecord()) != null) {
-			try {
-			    String reference = transaction.getString("Reference");
-			    String description = transaction.getString("Description");
-			    BigDecimal startBalance = new BigDecimal(transaction.getString("Start Balance"));
-			    BigDecimal mutation = new BigDecimal(transaction.getString("Mutation"));
-			    BigDecimal endBalance = new BigDecimal(transaction.getString("End Balance"));
-			    
-			    String replacedDescription = allReferences.put(reference, description);
-			    boolean referenceIsDuplicate = replacedDescription != null; 
-			    
-			    if (referenceIsDuplicate) {
-			    	// knownDuplicates.add returns true if the reference is not yet in the set
-			    	boolean firstDuplicate = knownDuplicates.add(reference); 
-			    	if (firstDuplicate) {
-			    		failedTransactions.add(new FailedTransaction(reference, replacedDescription, INVALID.DUPLICATE));
-			    	}
-			    	
-			    	failedTransactions.add(new FailedTransaction(reference, description, INVALID.DUPLICATE));
-			    	continue;
-			    }
-
-			    if (startBalance.add(mutation).compareTo(endBalance) != 0) {
-			    	failedTransactions.add(new FailedTransaction(reference, description, INVALID.WRONG_BALANCE));
-			    }
-			} catch (Exception e) {
-			    log.append("Failed to parse row with reference: " +transaction.getString("Reference")+"\n");
-			}
-		}
-		
-		return failedTransactions;
 	}
 	
-	public void printLog() {
-		if (log.length() > 0) {
-			System.out.println(log.toString());
+	@Override
+	Transaction nextTransaction() {
+		Record record = parser.parseNextRecord();
+		
+		if (record != null) {
+			String reference = record.getString("Reference");
+			String description = record.getString("Description");
+			String startBalance= record.getString("Start Balance");
+			String mutation = record.getString("Mutation");
+			String endBalance = record.getString("End Balance");
+			
+			return new Transaction(reference, description, startBalance, mutation, endBalance);
 		}
+		
+		return null;
 	}
 }
