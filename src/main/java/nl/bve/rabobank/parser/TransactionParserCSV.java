@@ -14,6 +14,7 @@ final class TransactionParserCSV implements TransactionParser {
 	
 	TransactionParserCSV(File transactionsFile) throws FileNotFoundException {
 		settings.setHeaderExtractionEnabled(true);
+		settings.setLineSeparatorDetectionEnabled(true);
 		parser.beginParsing(new FileReader(transactionsFile));
 	}
 	
