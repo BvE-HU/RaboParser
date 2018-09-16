@@ -14,7 +14,8 @@ public class AppTest {
         TransactionParserCSV parser = new TransactionParserCSV(new File("records.csv"));
 
         // assert statements
-        List<FailedTransaction> failedTransactions = parser.parse();
+        TransactionChecker checker = new TransactionChecker(parser);
+        List<FailedTransaction> failedTransactions = checker.parse();
         
         assertEquals(3, failedTransactions.size());
     }
