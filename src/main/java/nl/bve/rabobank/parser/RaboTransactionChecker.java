@@ -11,15 +11,15 @@ public class RaboTransactionChecker {
 			TransactionParser parser = null;
 			
 			if (args.length != 1) {
-				System.out.println("Usage: RaboTransactionChecker <filename.CSV | filename.XML>");
+				throw new Exception("Usage: RaboTransactionChecker <filename.CSV | filename.XML>");
 			} else if (! Files.exists(new File(args[0]).toPath())) {
-				System.out.println("File " +args[0]+ " does not exist!");
+				throw new Exception("File " +args[0]+ " does not exist!");
 			} else if (args[0].endsWith(".csv") && args[0].length() > 4) {
 				parser = new TransactionParserCSV(new File(args[0]));
 			} else if (args[0].endsWith(".xml") && args[0].length() > 4) {
-				System.out.println("XML parser is not yet implemented!");
+				throw new Exception("XML parser is not yet implemented!");
 			} else {
-				System.out.println("Usage: RaboTransactionChecker <filename.CSV | filename.XML>");
+				throw new Exception("Usage: RaboTransactionChecker <filename.CSV | filename.XML>");
 			}
 			
 			TransactionChecker checker = new TransactionChecker(parser);
