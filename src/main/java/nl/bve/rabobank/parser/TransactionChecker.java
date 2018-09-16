@@ -17,8 +17,8 @@ final class TransactionChecker {
 	}
 	
 	List<FailedTransaction> parse() throws FileNotFoundException {
-		Map<String, String> allReferences = new HashMap<String, String>();
-		Set<String> knownDuplicates = new HashSet<String>();
+		Map<String, String> allReferencesAndDescriptions = new HashMap<String, String>();
+		Set<String> knownDuplicateReferences = new HashSet<String>();
 		List<FailedTransaction> failedTransactions = new ArrayList<FailedTransaction>();
 
 		Transaction transaction;
@@ -31,12 +31,12 @@ final class TransactionChecker {
 			    BigDecimal mutation = new BigDecimal(transaction.mutation);
 			    BigDecimal endBalance = new BigDecimal(transaction.endBalance);
 
-			    String replacedDescription = allReferences.put(reference, description);
+			    String replacedDescription = allReferencesAndDescriptions.put(reference, description);
 			    boolean referenceIsDuplicate = replacedDescription != null; 
 			    
 			    if (referenceIsDuplicate) {
 			    	// knownDuplicates.add returns true if the reference is not yet in the set
-			    	boolean firstDuplicate = knownDuplicates.add(reference); 
+			    	boolean firstDuplicate = knownDuplicateReferences.add(reference); 
 			    	if (firstDuplicate) {
 			    		failedTransactions.add(new FailedTransaction(reference, replacedDescription, INVALID.DUPLICATE));
 			    	}
