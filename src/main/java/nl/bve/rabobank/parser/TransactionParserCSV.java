@@ -8,17 +8,17 @@ import com.univocity.parsers.common.record.Record;
 import com.univocity.parsers.csv.CsvParser;
 import com.univocity.parsers.csv.CsvParserSettings;
 
-final class RaboCSVParser extends RaboParser {
+final class TransactionParserCSV implements TransactionParser {
 	private CsvParserSettings settings = new CsvParserSettings();
 	private CsvParser parser = new CsvParser(settings);
 	
-	RaboCSVParser(File transactionsFile) throws FileNotFoundException {
+	TransactionParserCSV(File transactionsFile) throws FileNotFoundException {
 		settings.setHeaderExtractionEnabled(true);
 		parser.beginParsing(new FileReader(transactionsFile));
 	}
 	
 	@Override
-	Transaction nextTransaction() {
+	public Transaction nextTransaction() {
 		Record record = parser.parseNextRecord();
 		
 		if (record != null) {

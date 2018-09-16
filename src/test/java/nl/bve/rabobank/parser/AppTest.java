@@ -11,7 +11,7 @@ import org.junit.Test;
 public class AppTest {
     @Test
     public void testFailuresShouldBeThree() throws FileNotFoundException {
-        RaboCSVParser parser = new RaboCSVParser(new File("records.csv"));
+        TransactionParserCSV parser = new TransactionParserCSV(new File("records.csv"));
 
         // assert statements
         List<FailedTransaction> failedTransactions = parser.parse();

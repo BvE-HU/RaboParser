@@ -9,8 +9,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-abstract class RaboParser {
-	abstract Transaction nextTransaction();
+final class TransactionChecker {
+	private TransactionParser parser;
+	
+	TransactionChecker(TransactionParser parser) {
+		this.parser = parser;
+	}
 	
 	List<FailedTransaction> parse() throws FileNotFoundException {
 		Map<String, String> allReferences = new HashMap<String, String>();
@@ -18,7 +22,7 @@ abstract class RaboParser {
 		List<FailedTransaction> failedTransactions = new ArrayList<FailedTransaction>();
 
 		Transaction transaction;
-		while ((transaction = nextTransaction()) != null) {
+		while ((transaction = parser.nextTransaction()) != null) {
 		    String reference = transaction.reference;
 		    String description = transaction.description;
 		    
