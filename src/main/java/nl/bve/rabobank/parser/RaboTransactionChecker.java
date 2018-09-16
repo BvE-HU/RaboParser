@@ -17,7 +17,7 @@ public class RaboTransactionChecker {
 			} else if (args[0].endsWith(".csv") && args[0].length() > 4) {
 				parser = new TransactionParserCSV(new File(args[0]));
 			} else if (args[0].endsWith(".xml") && args[0].length() > 4) {
-				throw new Exception("XML parser is not yet implemented!");
+				parser = new TransactionParserXML(new File(args[0]));
 			} else {
 				throw new Exception("Usage: RaboTransactionChecker <filename.CSV | filename.XML>");
 			}
