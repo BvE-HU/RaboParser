@@ -23,13 +23,13 @@ final class TransactionChecker {
 
 		Transaction transaction;
 		while ((transaction = parser.nextTransaction()) != null) {
-		    String reference = transaction.reference;
-		    String description = transaction.description;
+		    String reference = transaction.getReference();
+		    String description = transaction.getDescription();
 		    
 			try {
-			    BigDecimal startBalance = new BigDecimal(transaction.startBalance);
-			    BigDecimal mutation = new BigDecimal(transaction.mutation);
-			    BigDecimal endBalance = new BigDecimal(transaction.endBalance);
+			    BigDecimal startBalance = new BigDecimal(transaction.getStartBalance());
+			    BigDecimal mutation = new BigDecimal(transaction.getMutation());
+			    BigDecimal endBalance = new BigDecimal(transaction.getEndBalance());
 
 			    String replacedDescription = allReferencesAndDescriptions.put(reference, description);
 			    boolean referenceIsDuplicate = replacedDescription != null; 
