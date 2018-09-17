@@ -15,7 +15,7 @@ public class AppTest {
 
         // assert statements
         TransactionChecker checker = new TransactionChecker(parser);
-        List<FailedTransaction> failedTransactions = checker.parse();
+        List<FailedTransaction> failedTransactions = checker.check();
         
         assertEquals(3, failedTransactions.size());
     }
