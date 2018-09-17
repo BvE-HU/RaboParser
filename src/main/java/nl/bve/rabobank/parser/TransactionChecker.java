@@ -16,7 +16,7 @@ final class TransactionChecker {
 		this.parser = parser;
 	}
 	
-	List<FailedTransaction> parse() throws FileNotFoundException {
+	List<FailedTransaction> check() throws FileNotFoundException {
 		Map<String, String> allReferencesAndDescriptions = new HashMap<String, String>();
 		Set<String> knownDuplicateReferences = new HashSet<String>();
 		List<FailedTransaction> failedTransactions = new ArrayList<FailedTransaction>();

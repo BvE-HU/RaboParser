@@ -14,16 +14,16 @@ public class RaboTransactionChecker {
 				throw new Exception("Usage: RaboTransactionChecker <filename.CSV | filename.XML>");
 			} else if (! Files.exists(new File(args[0]).toPath())) {
 				throw new Exception("File " +args[0]+ " does not exist!");
-			} else if (args[0].endsWith(".csv") && args[0].length() > 4) {
+			} else if (args[0].toLowerCase().endsWith(".csv") && args[0].length() > 4) {
 				parser = new TransactionParserCSV(new File(args[0]));
-			} else if (args[0].endsWith(".xml") && args[0].length() > 4) {
+			} else if (args[0].toLowerCase().endsWith(".xml") && args[0].length() > 4) {
 				parser = new TransactionParserXMLStAX(new File(args[0]));
 			} else {
 				throw new Exception("Usage: RaboTransactionChecker <filename.CSV | filename.XML>");
 			}
 			
 			TransactionChecker checker = new TransactionChecker(parser);
-			List<FailedTransaction> failedTransactions = checker.parse();
+			List<FailedTransaction> failedTransactions = checker.check();
 			
 			Collections.sort(failedTransactions);
 			failedTransactions.forEach(System.out::println);
